@@ -27,6 +27,10 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         {
             if(page.getPageName().equals("menu"))paintMenu(g);
         }
+        else if(page instanceof Loading)
+        {
+            if(page.getPageName().equals("loading")) paintLoading(g);
+        }
         else{
             if(page.getPageName().equals("Quit")) System.exit(0);
             else if(page.getPageName().equals("New Game")) page = new Page("Continue");
@@ -100,6 +104,32 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
 
     }
 
+    public void paintLoading(Graphics g)
+    {
+        Loading l = (Loading)page;
+        l.updatePanelWidth(getWidth());
+        g.setColor(new Color(0, 26, 23));
+        g.fillRect(0,0,getWidth(),getHeight());
+        if(l.getPercentage()>=100)
+        {
+            page.stopBgm();
+            page = new Page(Page.nextPage);
+        }
+        int x = (int)(0.01*getWidth());
+        int y = getHeight()/20;
+        int width = getWidth()/20;
+        int height = getHeight()/20;
+        g.drawImage(l.getButtons().get(0).getImage(),x,y,width,height,this);
+        l.getButtons().get(0).setHitBox(x,y,width,height);
+        g.drawImage(l.getFire().returnImage(),(int)(0.4096692112*getWidth()),(int)(0.777537797*getHeight()),getWidth()/5,getHeight()/5,this);
+        g.drawImage(l.getLoadingBar().returnImage(),(int)(0.3435114504*getWidth()),(int)(0.2807775378*getHeight()),getWidth()/3,getHeight()/2,this );
+        g.setColor(new Color(255, 255, 255));
+        g.setFont(new Font("Monospaced", Font.ITALIC, getWidth()/50));
+        g.drawString(l.getPercentage()+"%",(int)(0.489821883*getWidth()),(int)(0.626349892*getHeight()));
+        g.setFont(new Font("Monospaced", Font.BOLD, getWidth()/30));
+        g.drawString(l.getQuote(),(int)(l.getX()*getWidth()),(int)(0.7127429806*getHeight()));
+    }
+
     public void paintContinue(Graphics g)
     {
         g.setColor(new Color(0, 26, 23));
@@ -125,7 +155,12 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
                     Page.prevPage = page.getPageName();
                     page.stopBgm();
                     if(currentButton.getName().equals("menu")) page = new SpecialPage("menu",getWidth());
-                    else page = new Page(currentButton.getName());
+                    else {
+                        page = new Loading(getWidth());
+                        Page.nextPage = currentButton.getName();
+                        if(Page.nextPage.equals("Quit")) page = new Page("Quit");
+                    }
+
                 }
             }
         }

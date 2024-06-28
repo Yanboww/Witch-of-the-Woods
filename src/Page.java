@@ -7,6 +7,7 @@ public class Page {
     private static boolean muted;
     private static boolean mutedBefore;
     public static String prevPage;
+    public static String nextPage;
     public Page(String name)
     {
         pageName = name;
