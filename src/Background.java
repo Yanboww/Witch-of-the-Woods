@@ -14,10 +14,15 @@ public class Background {
     private ArrayList<BufferedImage> genStack(String name)
     {
         ArrayList<BufferedImage> stack = new ArrayList<>();
-        for(int i = 1; i < 4; i++)
+        int i =1;
+        while(true)
         {
-            stack.add(readImage("Image/Menu/"+name+"_"+i+".png"));
+            BufferedImage tempStorage = readImage("Image/"+name+"/"+name+"_"+i+".png");
+            if(tempStorage == null) break;
+            else stack.add(tempStorage);
+            i++;
         }
+        stack.add(readImage("Image/menu/u6Y2Di.gif"));
         return  stack;
     }
 

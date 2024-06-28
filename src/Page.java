@@ -6,25 +6,40 @@ public class Page {
     private final SoundUtil bgm;
     private static boolean muted;
     private static boolean mutedBefore;
+    public static String prevPage;
     public Page(String name)
     {
         pageName = name;
-        buttons = getButtons();
+        buttons = genButtons();
         bgm = new SoundUtil();
+        bgmName = name+".wav";
+        startBgm();
     }
     public ArrayList<Button> getButtons()
     {
         return buttons;
     }
-    public ArrayList<Button> getCurrentButtons() {
-        return buttons;
+    public ArrayList<Button> genButtons()
+    {
+        ArrayList<Button> currentButtons = new ArrayList<>();
+        if(pageName.equals("menu"))
+        {
+            currentButtons.add(new Button("Continue",false));
+            currentButtons.add(new Button("New Game",false));
+            currentButtons.add(new Button("Options",false));
+            currentButtons.add(new Button("Quit",false));
+        }
+        else{
+            currentButtons.add(new Button(prevPage,true));
+        }
+        return currentButtons;
     }
 
     public String getPageName() {
         return pageName;
     }
 
-    public String getBgmName(){return bgmName;}
+
     public void startBgm()
     {
         if(muted && !mutedBefore)
@@ -32,7 +47,7 @@ public class Page {
             stopBgm();
             mutedBefore = true;
         }
-        else if(!muted) bgm.playSound(bgmName);
+        else if(!muted) bgm.playSound(pageName+"/"+bgmName);
 
     }
     public void stopBgm()
@@ -44,4 +59,5 @@ public class Page {
         muted = !muted;
         mutedBefore = false;
     }
+
 }

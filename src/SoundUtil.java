@@ -33,7 +33,7 @@ public class SoundUtil {
             catch(FileNotFoundException e)
             {
                 try{
-                    File f = new File("AudioFile/pause.wav");
+                    File f = new File("AudioFile/menu/pause.wav");
                     AudioInputStream audioIn = AudioSystem.getAudioInputStream(f);
                     clip.open(audioIn);
                     clip.start();

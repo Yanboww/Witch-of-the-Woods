@@ -7,7 +7,7 @@ public class GameFrame extends JFrame implements Runnable {
 
     public GameFrame(String display) {
         super(display);
-        int frameWidth =500;
+        int frameWidth =800;
         int frameHeight = 500;
         p = new DrawPanel();
         this.add(p);
