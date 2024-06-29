@@ -60,5 +60,6 @@ public class Loading extends Page implements  ActionListener{
 
     public void actionPerformed(ActionEvent e) {
         percentage+=(int)(Math.random()*41);
+        if(percentage>100) percentage = 100;
     }
 }

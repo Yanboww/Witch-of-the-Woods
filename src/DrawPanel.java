@@ -12,12 +12,15 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     private Page page;
     final int WIDTH = 786;
     final int HEIGHT = 463;
+    public static String keyPressed;
 
     public DrawPanel() {
         this.addMouseListener(this);
         setFocusable(true);
         this.addKeyListener(this);
-        page = new SpecialPage("menu",getWidth());
+        //page = new SpecialPage("menu",getWidth());
+        page = new GamePage("test",getHeight(),getWidth());
+        keyPressed = "";
     }
 
     protected void paintComponent(Graphics g)
@@ -30,6 +33,10 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         else if(page instanceof Loading)
         {
             if(page.getPageName().equals("loading")) paintLoading(g);
+        }
+        else if(page instanceof  GamePage)
+        {
+            paintGame(g);
         }
         else{
             if(page.getPageName().equals("Quit")) System.exit(0);
@@ -142,6 +149,25 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         page.getButtons().get(0).setHitBox(x,y,width,height);
     }
 
+    public void paintGame(Graphics g)
+    {
+        GamePage game = (GamePage) page;
+        int y = 0;
+        for(Tile[] blocks : game.getWorld().getWorldMap())
+        {
+            int x = 0;
+            for(Tile block : blocks)
+            {
+                g.drawImage(block.getTileImage(),x,y,getHeight()/10,getHeight()/10,this);
+                block.setHitBox(x,y,getHeight()/10,getHeight()/10);
+                x+=(int)(0.0203562341*getWidth());
+            }
+            y+=(int)(0.0367170626*getHeight());
+        }
+        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/8,getHeight()/10,this);
+
+    }
+
     public void mousePressed(MouseEvent e) {
         Point p = e.getPoint();
         System.out.println(p);
@@ -172,9 +198,12 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void mouseClicked(MouseEvent e){}
     public void keyTyped(KeyEvent e){}
     public void keyPressed(KeyEvent e){
-
+        keyPressed = e.getKeyText(e.getKeyCode());
+        System.out.println(keyPressed);
     }
-    public void keyReleased(KeyEvent e){}
+    public void keyReleased(KeyEvent e){
+        keyPressed = "idle";
+    }
     public void actionPerformed(ActionEvent e){}
 
 }
