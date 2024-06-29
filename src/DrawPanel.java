@@ -164,7 +164,7 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
             }
             y+=(int)(0.0367170626*getHeight());
         }
-        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/8,getHeight()/10,this);
+        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/10,getWidth()/8,this);
 
     }
 
@@ -198,7 +198,7 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void mouseClicked(MouseEvent e){}
     public void keyTyped(KeyEvent e){}
     public void keyPressed(KeyEvent e){
-        keyPressed = e.getKeyText(e.getKeyCode());
+        keyPressed = KeyEvent.getKeyText(e.getKeyCode());
         System.out.println(keyPressed);
     }
     public void keyReleased(KeyEvent e){
