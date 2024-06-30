@@ -15,6 +15,7 @@ public class GameFrame extends JFrame implements Runnable {
         this.setSize(frameWidth, frameHeight);
         this.setLocation(60, 100);
         this.setVisible(true);
+        //setResizable(false);
         startThread();
 
     }

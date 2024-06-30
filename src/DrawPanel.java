@@ -13,14 +13,15 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     final int WIDTH = 786;
     final int HEIGHT = 463;
     public static String keyPressed;
+    boolean drawHitBox;
 
     public DrawPanel() {
         this.addMouseListener(this);
         setFocusable(true);
         this.addKeyListener(this);
         //page = new SpecialPage("menu",getWidth());
-        page = new GamePage("test",getHeight(),getWidth());
-        keyPressed = "";
+        keyPressed = " ";
+        page = new GamePage("test",HEIGHT,WIDTH);
     }
 
     protected void paintComponent(Graphics g)
@@ -152,20 +153,41 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void paintGame(Graphics g)
     {
         GamePage game = (GamePage) page;
+        game.setFrameHeight(getHeight());
+        game.setFrameWidth(getWidth());
         int y = 0;
-        for(Tile[] blocks : game.getWorld().getWorldMap())
+        g.setColor(new Color(255,255,255));
+        for(Tile[] blocks : game.worldMap())
         {
             int x = 0;
-            for(Tile block : blocks)
+            for(Tile block: blocks)
             {
-                g.drawImage(block.getTileImage(),x,y,getHeight()/10,getHeight()/10,this);
-                block.setHitBox(x,y,getHeight()/10,getHeight()/10);
-                x+=(int)(0.0203562341*getWidth());
+                g.drawImage(block.getTileImage(),x,y,getWidth()/5,getWidth()/8,this);
+                if(!block.isCharacterOnTile())
+                {
+                    block.setHitBox(x,y,getWidth()/5,getHeight()/5);
+                    if(drawHitBox)
+                    {
+                        g.drawRect(x,y,getWidth()/5,getHeight()/5);
+                    }
+                }
+                x+=getWidth()/5;
             }
-            y+=(int)(0.0367170626*getHeight());
+            y+=getWidth()/8;
         }
-        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/10,getWidth()/8,this);
-
+        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/3,getWidth()/3,this);
+        if(drawHitBox)
+        {
+            if(game.getPlayer().getCurrentSprite().getName().contains("right"))
+            {
+                //g.drawRect(game.getPlayer().getX()+60,game.getPlayer().getY()+95,80,98);
+                g.drawRect(game.getPlayer().getX()+(int)(0.0763358*getWidth()),game.getPlayer().getY()+(int)(0.120865*getWidth()),(int)(0.10178*getWidth()),(int)(0.1246819338*getWidth()));
+            }
+            else{
+                //g.drawRect(game.getPlayer().getX()+120,game.getPlayer().getY()+95,80,98);
+                g.drawRect(game.getPlayer().getX()+2*(int)(0.0763358*getWidth()),game.getPlayer().getY()+(int)(0.120865*getWidth()),(int)(0.10178*getWidth()),(int)(0.1246819338*getWidth()));
+            }
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -199,7 +221,8 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void keyTyped(KeyEvent e){}
     public void keyPressed(KeyEvent e){
         keyPressed = KeyEvent.getKeyText(e.getKeyCode());
-        System.out.println(keyPressed);
+        //System.out.println(keyPressed);
+        if(keyPressed.equals("Ctrl")) drawHitBox=!drawHitBox;
     }
     public void keyReleased(KeyEvent e){
         keyPressed = "idle";

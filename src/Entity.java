@@ -13,8 +13,8 @@ public class Entity {
         this.health = health;
         this.width = width;
         this.height = height;
-        x = 242;
-        y = 290;
+        x = -85;
+        y = 100;
     }
 
     public int getAttack() {
