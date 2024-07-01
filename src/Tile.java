@@ -7,14 +7,20 @@ public class Tile {
     private final BufferedImage tileImage;
     private final String name;
     private boolean characterOnTile;
+    private int tileR;
+    private int tileC;
     private Rectangle hitBox;
-    public Tile(String world, boolean characterOnTile, String name)
+    public Tile(String world, boolean characterOnTile, String name, int r, int c)
     {
         this.characterOnTile = characterOnTile;
         this.name = name;
         tileImage = readImage("Image/Tile/"+world+"/" + name +".png");
         hitBox = new Rectangle(0,0,100,100);
+        tileR = r;
+        tileC = c;
     }
+    public int getTileR(){return  tileR;}
+    public int getTileC(){return tileC;}
     public void setCharacterOnTile(boolean characterOnTile){this.characterOnTile = characterOnTile;}
     public String getName(){return name;}
     public boolean isCharacterOnTile(){return characterOnTile;}

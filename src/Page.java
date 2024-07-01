@@ -8,18 +8,21 @@ public class Page {
     private static boolean mutedBefore;
     public static String prevPage;
     public static String nextPage;
+    private final  Background bg;
     public Page(String name)
     {
         pageName = name;
         buttons = genButtons();
         bgm = new SoundUtil();
         bgmName = name+".wav";
+        bg = new Background(name);
         startBgm();
     }
     public ArrayList<Button> getButtons()
     {
         return buttons;
     }
+    public Background getBg(){return  bg;}
     public ArrayList<Button> genButtons()
     {
         ArrayList<Button> currentButtons = new ArrayList<>();

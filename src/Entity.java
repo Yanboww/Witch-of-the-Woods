@@ -6,15 +6,15 @@ public class Entity {
     private int y;
     private int width;
     private int height;
-    public Entity(int attack,int speed,int health,int width, int height)
+    public Entity(int attack,int speed,int health,int width, int height, int x, int y)
     {
         this.attack = attack;
         this.speed = speed;
         this.health = health;
         this.width = width;
         this.height = height;
-        x = -85;
-        y = 100;
+        this.x = x;
+        this.y = y;
     }
 
     public int getAttack() {

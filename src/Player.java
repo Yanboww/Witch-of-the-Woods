@@ -20,7 +20,7 @@ public class Player extends Entity implements ActionListener{
 
     public Player(int attack, int speed, int health,int width, int height,String name, GamePage test)
     {
-        super(attack,speed,health,width, height);
+        super(attack,speed,health,width, height,-70,115);
         walkLeft = new AnimSprites(name+"_walk_left",name,true,width,0,0);
         walkRight = new AnimSprites(name+"_walk_right",name,true,width,0,0);
         jumpLeft = new AnimSprites(name+"_jump_left",name,true,width,0,0);
@@ -35,66 +35,54 @@ public class Player extends Entity implements ActionListener{
         playerR = 3;
         playerC = 0;
         this.test = test;
-        hitBox = new Rectangle(0,0,100,100);
+        hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0581679389*getWidth()),(int)(0.065*getWidth()));
         t.start();
     }
     public AnimSprites getCurrentSprite(){return  currentSprite;}
     public void move(int x)
     {
-        if(x<0) {
-            if(test.checkHitBox((int)playerR,(int)(playerC-0.1)))
-            {
-                playerC-=0.1;
-            }
+        int xValue = getX();
+        if(playerC>45)
+        {
+            if(xValue+x>getWidth()-getWidth()/10) setX(getWidth()-getWidth()/10);
+            else setX(xValue+x);
+            if(getX()<=(int)(0.44529*getWidth())) playerC = 45;
         }
-
-        else {
-            if(test.checkHitBox((int)playerR,(int)(playerC+0.1)))
-            {
-                playerC+=0.1;
-            }
+        else if(playerC < 4)
+        {
+            if(xValue<-(int)(0.08905855242*getWidth())) setX(-(int)(0.08905855242*getWidth()));
+            else setX(xValue+x);
+            if(getX()>=(int)(0.2926*getWidth())) playerC = 4;
         }
+        else
+        {
+            if( x< 0 && xValue<=(int)(0.1755725191*getWidth())){
+                setX((int)(0.1755725191*getWidth()));
+                if(test.setPlayerPos(x)) playerC-=0.15;
 
+            }
+            else if(x >0 && xValue>=(int)(0.6615776081*getWidth()))
+            {
+                setX((int)(0.6615776081*getWidth()));
+                if( test.setPlayerPos(x)) playerC+=0.15;
+
+            }
+            else setX(xValue+x);
+        }
+        //test.setPlayerPos(x);
         if(playerC < 0) playerC = 0;
-        else if(playerC > 49) playerC = 49;
-        if(playerC < 2 )
-        {
-            if(x > 0) setX(getX()+25);
-            else {
-                setX(getX() - 25);
-                if(getX()<-85) setX(-85);
-            }
-        }
-        else if(playerC > 47)
-        {
-            if(x > 0)
-            {
-                setX(getX() + 25);
-                if(getX()>300) setX(300);
-            }
-            else {
-                setX(getX()-25);;
-            }
-        }
-        else setX(250);
-        System.out.println("Player X coord: " + getX());
+        if(playerC > 49) playerC = 49;
     }
     public void jump(int y)
     {
         if(playerR+1 == 10) playerR = 8;
         else if( playerR +1 == 1) playerR = 1;
         if(y>0) {
-            if(test.checkHitBox((int)playerR+1,(int)playerC))
-            {
-                playerR ++;
-            }
+            playerR ++;
         }
         else {
 
-            if(test.checkHitBox((int)playerR-1,(int)playerC))
-            {
-                playerR --;
-            }
+            playerR --;
         }
     }
     public void setWidth(int width) {
@@ -117,17 +105,37 @@ public class Player extends Entity implements ActionListener{
     public void actionPerformed(ActionEvent e){
         if(DrawPanel.keyPressed.equals("A"))
         {
+            if(directionRight)
+            {
+                setX(getX()-25);
+                setHitBox(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
+            }
             currentSprite = walkLeft;
             directionRight = false;
-            move((int)(-0.0054*getWidth()));
-            setHitBox(getX()+(int)(0.0763358*getWidth()),getY()+(int)(0.120865*getWidth()),(int)(0.10178*getWidth()),(int)(0.1246819338*getWidth()));
+            if(test.checkHorizontalHitBox())
+            {
+                move(-getWidth()/getSpeed());
+                setHitBox(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
+                //test.setPlayerPos(x);
+                //System.out.println("player pos: " + (int)playerR + "," + (int)playerC);
+            }
         }
         else if(DrawPanel.keyPressed.equals("D"))
         {
+            if(!directionRight)
+            {
+                setX(getX()+26);
+                setHitBox(getX()+(int)(0.0501679389*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
+            }
             currentSprite = walkRight;
             directionRight = true;
-            move((int)(0.0054*getWidth()));
-            setHitBox(getX()+2*(int)(0.0763358*getWidth()),getY()+(int)(0.120865*getWidth()),(int)(0.10178*getWidth()),(int)(0.1246819338*getWidth()));
+            if(test.checkHorizontalHitBox())
+            {
+                move(getWidth()/getSpeed());
+                setHitBox(getX()+(int)(0.0501679389*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
+                //test.setPlayerPos(x);
+                //System.out.println("player pos: " + (int)playerR + "," + (int)playerC);
+            }
         }
         else if(DrawPanel.keyPressed.equals("Space"))
         {
@@ -170,7 +178,7 @@ public class Player extends Entity implements ActionListener{
     }
 
     public void setPlayerR(int r){playerR = r;}
-    public void setPlayerC(int r){playerR = r;}
+    public void setPlayerC(double c){playerC = c;}
     public double getPlayerR(){return  playerR;}
     public double getPlayerC(){return  playerC;}
 

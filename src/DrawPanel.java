@@ -153,40 +153,51 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void paintGame(Graphics g)
     {
         GamePage game = (GamePage) page;
+        g.drawImage(game.getBg().getStack().get(0),0,0,getWidth(),getHeight(),this);
         game.setFrameHeight(getHeight());
         game.setFrameWidth(getWidth());
         int y = 0;
-        g.setColor(new Color(255,255,255));
         for(Tile[] blocks : game.worldMap())
         {
             int x = 0;
             for(Tile block: blocks)
             {
-                g.drawImage(block.getTileImage(),x,y,getWidth()/5,getWidth()/8,this);
+                block.setHitBox(x,y,getWidth()/9,getHeight()/9);
                 if(!block.isCharacterOnTile())
-                {
-                    block.setHitBox(x,y,getWidth()/5,getHeight()/5);
-                    if(drawHitBox)
+                {   g.setColor(new Color(255,255,255));
+                    g.drawImage(block.getTileImage(),x,y,getWidth()/9,getHeight()/9,this);
+                    if(drawHitBox && keyPressed.equals("B"))
                     {
-                        g.drawRect(x,y,getWidth()/5,getHeight()/5);
+                        int tileX = (int)block.getHitBox().getX();
+                        int tileY = (int)block.getHitBox().getY();
+                        int tileW = (int)block.getHitBox().getWidth();
+                        int tileH = (int)block.getHitBox().getHeight();
+                        g.drawRect(tileX,tileY,tileW,tileH);
                     }
                 }
-                x+=getWidth()/5;
+                else{
+                    g.setColor(new Color(0,255,255));
+                    if(drawHitBox && keyPressed.equals("E"))
+                    {
+                        int tileX = (int)block.getHitBox().getX();
+                        int tileY = (int)block.getHitBox().getY();
+                        int tileW = (int)block.getHitBox().getWidth();
+                        int tileH = (int)block.getHitBox().getHeight();
+                       g.drawRect(tileX,tileY,tileW,tileH);
+                    }
+                }
+                x+=getWidth()/9;
             }
-            y+=getWidth()/8;
+            y+=getHeight()/9;
         }
-        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/3,getWidth()/3,this);
-        if(drawHitBox)
+        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
+        if(drawHitBox )
         {
-            if(game.getPlayer().getCurrentSprite().getName().contains("right"))
-            {
-                //g.drawRect(game.getPlayer().getX()+60,game.getPlayer().getY()+95,80,98);
-                g.drawRect(game.getPlayer().getX()+(int)(0.0763358*getWidth()),game.getPlayer().getY()+(int)(0.120865*getWidth()),(int)(0.10178*getWidth()),(int)(0.1246819338*getWidth()));
-            }
-            else{
-                //g.drawRect(game.getPlayer().getX()+120,game.getPlayer().getY()+95,80,98);
-                g.drawRect(game.getPlayer().getX()+2*(int)(0.0763358*getWidth()),game.getPlayer().getY()+(int)(0.120865*getWidth()),(int)(0.10178*getWidth()),(int)(0.1246819338*getWidth()));
-            }
+            int pX = (int)game.getPlayer().getHitBox().getX();
+            int pY = (int)game.getPlayer().getHitBox().getY();
+            int pW = (int)game.getPlayer().getHitBox().getWidth();
+            int pH = (int)game.getPlayer().getHitBox().getHeight();
+            g.drawRect(pX,pY,pW,pH);
         }
     }
 
@@ -220,6 +231,7 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void mouseClicked(MouseEvent e){}
     public void keyTyped(KeyEvent e){}
     public void keyPressed(KeyEvent e){
+
         keyPressed = KeyEvent.getKeyText(e.getKeyCode());
         //System.out.println(keyPressed);
         if(keyPressed.equals("Ctrl")) drawHitBox=!drawHitBox;

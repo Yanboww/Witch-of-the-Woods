@@ -11,7 +11,7 @@ public class World{
     public World(String name)
     {
         worldName = name;
-        worldMap = new Tile[10][50];
+        worldMap = new Tile[20][50];
         mapKey = genHashMap();
         tileProperty = genTileProperty();
         genWorldMap();
@@ -49,7 +49,7 @@ public class World{
             {
                 //System.out.println(tileProperty.get("#"));
                 //System.out.println(tileProperty.get("B"));
-                worldMap[r][c] = new Tile(worldName,tileProperty.get(input[r][c]),mapKey.get(input[r][c]));
+                worldMap[r][c] = new Tile(worldName,tileProperty.get(input[r][c]),mapKey.get(input[r][c]),r,c);
             }
         }
     }

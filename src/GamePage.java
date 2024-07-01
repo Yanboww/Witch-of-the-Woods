@@ -1,12 +1,12 @@
+import java.util.Arrays;
 public class GamePage extends Page{
     private final World world;
     private final Player player;
-
     public GamePage(String name, int frameHeight, int frameWidth)
     {
         super(name);
         world = new World(name);
-        player = new Player(10,10,10,frameWidth,frameHeight,"player",this);
+        player = new Player(10,100,10,frameWidth,frameHeight,"player",this);
     }
     public void setFrameHeight(int height){
         player.setHeight(height);
@@ -21,11 +21,11 @@ public class GamePage extends Page{
         Tile[][] worldMap = world.getWorldMap();
         int playerR = (int)player.getPlayerR();
         int playerC = (int)player.getPlayerC();
-        Tile[][] display = new Tile[5][5];
-        int top = playerR -2;
-        int bottom = playerR+2;
-        int left = playerC -2;
-        int right = playerC+2;
+        Tile[][] display = new Tile[9][9];
+        int top = playerR -4;
+        int bottom = playerR+4;
+        int left = playerC -4;
+        int right = playerC+4;
         if(top<0)
         {
             bottom -=top;
@@ -60,12 +60,58 @@ public class GamePage extends Page{
         return display;
     }
 
-    public boolean checkHitBox(int r, int c)
+    public boolean checkHorizontalHitBox()
     {
-        System.out.println( "Player world Pos: " + r + " " + c);
-        if(!world.getWorldMap()[r][c].isCharacterOnTile())
+        Tile[][] map = world.getWorldMap();
+        int r = (int)player.getPlayerR();
+        if(DrawPanel.keyPressed.equals("A"))
         {
-           return false;
+            for(int c = 0 ; c < map.length;c++)
+            {
+                Tile currentTile = map[r][c];
+                if(!currentTile.isCharacterOnTile() && currentTile.getHitBox().intersects(player.getHitBox()))
+                {
+                    return false;
+                }
+            }
+        }
+        else{
+            for(int c = map[0].length-1; c >= 0 ;c--)
+            {
+                Tile currentTile = map[r][c];
+                if(!currentTile.isCharacterOnTile() && currentTile.getHitBox().intersects(player.getHitBox()))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public boolean setPlayerPos(int x)
+    {
+        for(Tile[] row : worldMap())
+        {
+            for(Tile block : row)
+            {
+                if(block.isCharacterOnTile())
+                {
+                   if(block.getHitBox().intersects(player.getHitBox()))
+                   {
+                       System.out.println(block.getTileR() + "," + block.getTileC());
+                       if(block.getTileC() != 49 && block.getTileC() != 0)
+                       {
+                           if(!world.getWorldMap()[(int)player.getPlayerR()][block.getTileC()+1].isCharacterOnTile() && x>0)
+                           {
+                               return false;
+                           }
+                           if(!world.getWorldMap()[(int)player.getPlayerR()][block.getTileC()-1].isCharacterOnTile() && x<0)
+                           {
+                               return false;
+                           }
+                       }
+                   }
+                }
+            }
         }
         return true;
     }
