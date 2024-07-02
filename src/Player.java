@@ -20,7 +20,7 @@ public class Player extends Entity implements ActionListener{
 
     public Player(int attack, int speed, int health,int width, int height,String name, GamePage test)
     {
-        super(attack,speed,health,width, height,-70,115);
+        super(attack,speed,health,width, height,-70,110);
         walkLeft = new AnimSprites(name+"_walk_left",name,true,width,0,0);
         walkRight = new AnimSprites(name+"_walk_right",name,true,width,0,0);
         jumpLeft = new AnimSprites(name+"_jump_left",name,true,width,0,0);
@@ -35,10 +35,23 @@ public class Player extends Entity implements ActionListener{
         playerR = 3;
         playerC = 0;
         this.test = test;
-        hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0581679389*getWidth()),(int)(0.065*getWidth()));
+        hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0581679389*getWidth()),(int)(0.075*getWidth()));
         t.start();
     }
     public AnimSprites getCurrentSprite(){return  currentSprite;}
+    public void setFalling(){
+        if(directionRight)
+        {
+            currentSprite = fallRight;
+        }
+        else currentSprite = fallLeft;
+    }
+    public void setIdle()
+    {
+        if(directionRight) currentSprite = idleRight;
+        else currentSprite = idleLeft;
+    }
+
     public void move(int x)
     {
         int xValue = getX();
@@ -58,13 +71,13 @@ public class Player extends Entity implements ActionListener{
         {
             if( x< 0 && xValue<=(int)(0.1755725191*getWidth())){
                 setX((int)(0.1755725191*getWidth()));
-                if(test.setPlayerPos(x)) playerC-=0.15;
+                if(test.setPlayerPosX(x)) playerC-=0.15;
 
             }
             else if(x >0 && xValue>=(int)(0.6615776081*getWidth()))
             {
                 setX((int)(0.6615776081*getWidth()));
-                if( test.setPlayerPos(x)) playerC+=0.15;
+                if( test.setPlayerPosX(x)) playerC+=0.15;
 
             }
             else setX(xValue+x);
@@ -73,17 +86,9 @@ public class Player extends Entity implements ActionListener{
         if(playerC < 0) playerC = 0;
         if(playerC > 49) playerC = 49;
     }
-    public void jump(int y)
+    public void jump(double y)
     {
-        if(playerR+1 == 10) playerR = 8;
-        else if( playerR +1 == 1) playerR = 1;
-        if(y>0) {
-            playerR ++;
-        }
-        else {
-
-            playerR --;
-        }
+        test.simulateJump(y);
     }
     public void setWidth(int width) {
         if(width!=getWidth())
@@ -100,6 +105,7 @@ public class Player extends Entity implements ActionListener{
         super.setHeight(height);
     }
     public Rectangle getHitBox(){return hitBox;}
+    public boolean getDirectionRight(){return directionRight;}
 
 
     public void actionPerformed(ActionEvent e){
@@ -108,16 +114,14 @@ public class Player extends Entity implements ActionListener{
             if(directionRight)
             {
                 setX(getX()-25);
-                setHitBox(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
+                setHitBox(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
             }
             currentSprite = walkLeft;
             directionRight = false;
             if(test.checkHorizontalHitBox())
             {
                 move(-getWidth()/getSpeed());
-                setHitBox(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
-                //test.setPlayerPos(x);
-                //System.out.println("player pos: " + (int)playerR + "," + (int)playerC);
+                setHitBox(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
             }
         }
         else if(DrawPanel.keyPressed.equals("D"))
@@ -125,16 +129,14 @@ public class Player extends Entity implements ActionListener{
             if(!directionRight)
             {
                 setX(getX()+26);
-                setHitBox(getX()+(int)(0.0501679389*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
+                setHitBox(getX()+(int)(0.0501679389*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
             }
             currentSprite = walkRight;
             directionRight = true;
             if(test.checkHorizontalHitBox())
             {
                 move(getWidth()/getSpeed());
-                setHitBox(getX()+(int)(0.0501679389*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.065*getWidth()));
-                //test.setPlayerPos(x);
-                //System.out.println("player pos: " + (int)playerR + "," + (int)playerC);
+                setHitBox(getX()+(int)(0.0501679389*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
             }
         }
         else if(DrawPanel.keyPressed.equals("Space"))
@@ -144,40 +146,22 @@ public class Player extends Entity implements ActionListener{
                 currentSprite = jumpRight;
             }
             else currentSprite = jumpLeft;
-            jump(-10);
+            jump(-(0.0769330454*getHeight()));
         }
-        else if(DrawPanel.keyPressed.equals("W"))
-        {
-            if(directionRight)
-            {
-                currentSprite = jumpRight;
-            }
-            else currentSprite = jumpLeft;
-            jump(-10);
-        }
-        else if(DrawPanel.keyPressed.equals("S"))
-        {
-            if(directionRight)
-            {
-                currentSprite = fallRight;
-            }
-            else currentSprite = fallLeft;
-            jump(10);
-        }
-        else{
+       /* else if(currentSprite!=fallLeft && currentSprite != fallRight){
             if(directionRight)
             {
                 currentSprite = idleRight;
             }
             else currentSprite = idleLeft;
-        }
+        }**/
     }
     public void setHitBox(int x, int y, int width, int height)
     {
         hitBox = new Rectangle(x,y,width,height);
     }
 
-    public void setPlayerR(int r){playerR = r;}
+    public void setPlayerR(double r){playerR = r;}
     public void setPlayerC(double c){playerC = c;}
     public double getPlayerR(){return  playerR;}
     public double getPlayerC(){return  playerC;}

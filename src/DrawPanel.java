@@ -42,7 +42,10 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         else{
             if(page.getPageName().equals("Quit")) System.exit(0);
             else if(page.getPageName().equals("New Game")) page = new Page("Continue");
-            else if(page.getPageName().equals("Continue")) paintContinue(g);
+            else if(page.getPageName().equals("Continue")){
+                page = new GamePage("test",getHeight(),getWidth());
+                //paintContinue(g);
+            }
         }
 
     }
@@ -235,6 +238,10 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         keyPressed = KeyEvent.getKeyText(e.getKeyCode());
         //System.out.println(keyPressed);
         if(keyPressed.equals("Ctrl")) drawHitBox=!drawHitBox;
+        if(keyPressed.equals("M")){
+            page.setMuted();
+            page.startBgm();
+        }
     }
     public void keyReleased(KeyEvent e){
         keyPressed = "idle";

@@ -1,12 +1,16 @@
-import java.util.Arrays;
+import java.awt.Rectangle;
 public class GamePage extends Page{
     private final World world;
     private final Player player;
+    private Tile currentTile;
+    private Physics playerPhysics;
     public GamePage(String name, int frameHeight, int frameWidth)
     {
         super(name);
         world = new World(name);
         player = new Player(10,100,10,frameWidth,frameHeight,"player",this);
+        currentTile = world.getWorldMap()[3][0];
+        playerPhysics = new Physics(player,this);
     }
     public void setFrameHeight(int height){
         player.setHeight(height);
@@ -63,31 +67,62 @@ public class GamePage extends Page{
     public boolean checkHorizontalHitBox()
     {
         Tile[][] map = world.getWorldMap();
-        int r = (int)player.getPlayerR();
+        setPlayerPosX(0);
+        if(currentTile.getTileC() == 0 && DrawPanel.keyPressed.equals("A")) return false;
+        else if(currentTile.getTileC() == 49 && DrawPanel.keyPressed.equals("D")) return false;
+        int r = currentTile.getTileR();
         if(DrawPanel.keyPressed.equals("A"))
         {
-            for(int c = 0 ; c < map.length;c++)
+            int c = currentTile.getTileC()-1;
+            Tile currentTile = map[r][c];
+            if(!currentTile.isCharacterOnTile() && currentTile.getHitBox().intersects(player.getHitBox()))
             {
-                Tile currentTile = map[r][c];
-                if(!currentTile.isCharacterOnTile() && currentTile.getHitBox().intersects(player.getHitBox()))
-                {
-                    return false;
-                }
+                return false;
             }
         }
         else{
-            for(int c = map[0].length-1; c >= 0 ;c--)
+            int c = currentTile.getTileC()+1;
+            Tile currentTile = map[r][c];
+            if(!currentTile.isCharacterOnTile() && currentTile.getHitBox().intersects(player.getHitBox()))
             {
-                Tile currentTile = map[r][c];
-                if(!currentTile.isCharacterOnTile() && currentTile.getHitBox().intersects(player.getHitBox()))
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
     }
-    public boolean setPlayerPos(int x)
+    public boolean checkVerticalHitBox(String state)
+    {
+        Tile[][] map = world.getWorldMap();
+        setPlayerPosX(0);
+        if(currentTile.getTileR() == 19 && state.equals("down")) return false;
+        if(currentTile.getTileR() == 0 && state.equals("up")) return false;
+        int c = currentTile.getTileC();
+        if(state.equals("up"))
+        {
+            Tile temp = map[currentTile.getTileR()-1][c];
+            if(!temp.isCharacterOnTile() && temp.getHitBox().intersects(player.getHitBox())) return false;
+        }
+        else{
+            Tile temp = map[currentTile.getTileR()+1][c];
+            if(!temp.isCharacterOnTile() &&  temp.getHitBox().intersects(player.getHitBox())) return false;
+        }
+        return true;
+    }
+    public boolean setPlayerPosY(String state)
+    {
+        Tile[][] map = world.getWorldMap();
+        setPlayerPosX(0);
+        if(currentTile.getTileR()==19) return false;
+        if(currentTile.getTileR() == 0) return false;
+        Tile aboveTile = map[currentTile.getTileR()-1][currentTile.getTileC()];
+        Tile belowTile = map[currentTile.getTileR()+1][currentTile.getTileC()];
+        if(aboveTile.isCharacterOnTile() && state.equals("up")){
+            return true;
+        }
+        else if(!state.equals("up") && belowTile.isCharacterOnTile()) return true;
+        else return false;
+    }
+    public boolean setPlayerPosX(int x)
     {
         for(Tile[] row : worldMap())
         {
@@ -97,16 +132,24 @@ public class GamePage extends Page{
                 {
                    if(block.getHitBox().intersects(player.getHitBox()))
                    {
-                       System.out.println(block.getTileR() + "," + block.getTileC());
+                       currentTile = block;
+                       //System.out.println(block.getTileR() + "," + block.getTileC());
                        if(block.getTileC() != 49 && block.getTileC() != 0)
                        {
-                           if(!world.getWorldMap()[(int)player.getPlayerR()][block.getTileC()+1].isCharacterOnTile() && x>0)
+                           if(x>0)
                            {
-                               return false;
+                               if(!world.getWorldMap()[block.getTileR()][block.getTileC()+1].isCharacterOnTile() )
+                               {
+                                   return false;
+                               }
                            }
-                           if(!world.getWorldMap()[(int)player.getPlayerR()][block.getTileC()-1].isCharacterOnTile() && x<0)
+                           else if( x<0)
                            {
-                               return false;
+                               if(!world.getWorldMap()[block.getTileR()][block.getTileC()-1].isCharacterOnTile())
+                               {
+                                   return false;
+                               }
+
                            }
                        }
                    }
@@ -114,6 +157,11 @@ public class GamePage extends Page{
             }
         }
         return true;
+    }
+
+    public void simulateJump(double y)
+    {
+        playerPhysics.setCurrentVelocity(y);
     }
 
 }
