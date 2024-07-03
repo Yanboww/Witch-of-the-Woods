@@ -60,7 +60,18 @@ public class World{
         {
             HashMap<String,String> tempKey = new HashMap<>();
             tempKey.put("#","space");
+            tempKey.put("L", "block_edge_left");
+            tempKey.put("R","block_edge_right");
+            tempKey.put("U","Under_Platform_Center");
+            tempKey.put("Y","Under_Platform_Left");
+            tempKey.put("I","Under_Platform_Right");
             tempKey.put("B","block");
+            tempKey.put("W","Water");
+            tempKey.put("C","Church");
+            tempKey.put("F","Fire");
+            tempKey.put("T","Tree");
+            tempKey.put("G","Grave");
+            tempKey.put("J","Cross");
             return  tempKey;
         }
         return mapKey;
@@ -71,7 +82,18 @@ public class World{
         {
             HashMap<String,Boolean> tempProperty = new HashMap<>();
             tempProperty.put("#",true);
+            tempProperty.put("L",false);
+            tempProperty.put("R",false);
             tempProperty.put("B",false);
+            tempProperty.put("U",false);
+            tempProperty.put("Y",false);
+            tempProperty.put("I",false);
+            tempProperty.put("C",true);
+            tempProperty.put("W",true);
+            tempProperty.put("F",true);
+            tempProperty.put("T",true);
+            tempProperty.put("J",true);
+            tempProperty.put("G",true);
             return  tempProperty;
         }
         return tileProperty;

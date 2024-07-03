@@ -18,7 +18,7 @@ public class AnimSprites implements ActionListener {
     private int speed;
     public AnimSprites(String name,String page,boolean moveable,int size,int x,int speed)
     {
-        t = new Timer(200,this);
+        t = new Timer(100,this);
         this.name = name;
         this.page = page;
         frames = new ArrayList<>();

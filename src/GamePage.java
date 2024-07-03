@@ -1,16 +1,21 @@
 import java.awt.Rectangle;
+import java.util.ArrayList;
+
 public class GamePage extends Page{
     private final World world;
     private final Player player;
     private Tile currentTile;
     private Physics playerPhysics;
+    private ArrayList<AnimSprites> pageSprites;
     public GamePage(String name, int frameHeight, int frameWidth)
     {
         super(name);
         world = new World(name);
-        player = new Player(10,100,10,frameWidth,frameHeight,"player",this);
+        player = new Player(10,60,10,frameWidth,frameHeight,"player",this);
         currentTile = world.getWorldMap()[3][0];
         playerPhysics = new Physics(player,this);
+        pageSprites = new ArrayList<>();
+        genPageSprite();
     }
     public void setFrameHeight(int height){
         player.setHeight(height);
@@ -94,7 +99,7 @@ public class GamePage extends Page{
     {
         Tile[][] map = world.getWorldMap();
         setPlayerPosX(0);
-        if(currentTile.getTileR() == 19 && state.equals("down")) return false;
+        if(currentTile.getTileR() == 8 && state.equals("down")) return false;
         if(currentTile.getTileR() == 0 && state.equals("up")) return false;
         int c = currentTile.getTileC();
         if(state.equals("up"))
@@ -107,6 +112,18 @@ public class GamePage extends Page{
             if(!temp.isCharacterOnTile() &&  temp.getHitBox().intersects(player.getHitBox())) return false;
         }
         return true;
+    }
+    public ArrayList<AnimSprites> getPageSprites(){return pageSprites;}
+    public void genPageSprite(){
+        if(getPageName().equals("dark matter"))
+        {
+            pageSprites.add(new AnimSprites("Church","Tile",false, getPlayer().getWidth(), 0,0));
+            pageSprites.add(new AnimSprites("Water","Tile",false, getPlayer().getWidth(), 0,0));
+            pageSprites.add(new AnimSprites("Fire","Tile",false, getPlayer().getWidth(), 0,0));
+            pageSprites.add(new AnimSprites("Tree","Tile",false, getPlayer().getWidth(), 0,0));
+            pageSprites.add(new AnimSprites("Grave","Tile",false, getPlayer().getWidth(), 0,0));
+            pageSprites.add(new AnimSprites("Cross","Tile",false, getPlayer().getWidth(), 0,0));
+        }
     }
     public boolean setPlayerPosY(String state)
     {
@@ -132,7 +149,20 @@ public class GamePage extends Page{
                 {
                    if(block.getHitBox().intersects(player.getHitBox()))
                    {
-                       currentTile = block;
+                       if(currentTile != block)
+                       {
+                           Rectangle playerHitBox = player.getHitBox();
+                           Rectangle blockHitBox = block.getHitBox();
+                           Rectangle currentTileHitBox = currentTile.getHitBox();
+                           Rectangle playerBlockIntersect = blockHitBox.intersection(playerHitBox);
+                           Rectangle playerCurrentIntersect = currentTileHitBox.intersection(playerHitBox);
+                           double playerBlockArea = playerBlockIntersect.getHeight()*playerBlockIntersect.getWidth();
+                           double playerCurrentArea = playerCurrentIntersect.getHeight()*playerCurrentIntersect.getWidth();
+                           if(playerBlockArea>playerCurrentArea)
+                           {
+                               currentTile = block;
+                           }
+                       }
                        //System.out.println(block.getTileR() + "," + block.getTileC());
                        if(block.getTileC() != 49 && block.getTileC() != 0)
                        {

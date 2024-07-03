@@ -19,9 +19,8 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         this.addMouseListener(this);
         setFocusable(true);
         this.addKeyListener(this);
-        //page = new SpecialPage("menu",getWidth());
+        page = new SpecialPage("menu",getWidth());
         keyPressed = " ";
-        page = new GamePage("test",HEIGHT,WIDTH);
     }
 
     protected void paintComponent(Graphics g)
@@ -43,8 +42,8 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
             if(page.getPageName().equals("Quit")) System.exit(0);
             else if(page.getPageName().equals("New Game")) page = new Page("Continue");
             else if(page.getPageName().equals("Continue")){
-                page = new GamePage("test",getHeight(),getWidth());
-                //paintContinue(g);
+                page = new GamePage("dark matter",HEIGHT,WIDTH);
+                paintContinue(g);
             }
         }
 
@@ -156,9 +155,13 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
     public void paintGame(Graphics g)
     {
         GamePage game = (GamePage) page;
-        g.drawImage(game.getBg().getStack().get(0),0,0,getWidth(),getHeight(),this);
+        for(int i = 0; i < game.getBg().getStack().size(); i++)
+        {
+            g.drawImage(game.getBg().getStack().get(i),0,0,getWidth(),getHeight(),this);
+        }
         game.setFrameHeight(getHeight());
         game.setFrameWidth(getWidth());
+        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
         int y = 0;
         for(Tile[] blocks : game.worldMap())
         {
@@ -178,6 +181,33 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
                         g.drawRect(tileX,tileY,tileW,tileH);
                     }
                 }
+                else if(!block.getName().equals("space"))
+                {
+                    if(block.getName().equals("Water"))
+                    {
+                        g.drawImage(game.getPageSprites().get(1).returnImage(),x,y,getWidth()/8,getHeight()/8,this);
+                    }
+                    else if(block.getName().equals("Church"))
+                    {
+                        g.drawImage(game.getPageSprites().get(0).returnImage(),x,y-(int)(0.3887688985*getHeight()),getWidth()/6,getHeight()/2,this);
+                    }
+                    else if(block.getName().equals("Tree"))
+                    {
+                        g.drawImage(game.getPageSprites().get(3).returnImage(),x,y-(int)(0.3455723542*getHeight()),getWidth()/6,getHeight()/2,this);
+                    }
+                    else if(block.getName().equals("Fire"))
+                    {
+                        g.drawImage(game.getPageSprites().get(2).returnImage(),x,y+(int)(0.0215982721*getHeight()),getWidth()/9,getHeight()/9,this);
+                    }
+                    else if(block.getName().equals("Grave"))
+                    {
+                        g.drawImage(game.getPageSprites().get(4).returnImage(),x,y+(int)(0.0215982721*getHeight()),getWidth()/9,getHeight()/9,this);
+                    }
+                    else if(block.getName().equals("Cross"))
+                    {
+                        g.drawImage(game.getPageSprites().get(5).returnImage(),x,y+(int)(0.0215982721*getHeight()),getWidth()/12,getHeight()/9,this);
+                    }
+                }
                 else{
                     g.setColor(new Color(0,255,255));
                     if(drawHitBox && keyPressed.equals("E"))
@@ -193,7 +223,6 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
             }
             y+=getHeight()/9;
         }
-        g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
         if(drawHitBox )
         {
             int pX = (int)game.getPlayer().getHitBox().getX();

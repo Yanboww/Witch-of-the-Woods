@@ -71,13 +71,13 @@ public class Player extends Entity implements ActionListener{
         {
             if( x< 0 && xValue<=(int)(0.1755725191*getWidth())){
                 setX((int)(0.1755725191*getWidth()));
-                if(test.setPlayerPosX(x)) playerC-=0.15;
+                if(test.setPlayerPosX(x)) playerC-=0.25;
 
             }
             else if(x >0 && xValue>=(int)(0.6615776081*getWidth()))
             {
                 setX((int)(0.6615776081*getWidth()));
-                if( test.setPlayerPosX(x)) playerC+=0.15;
+                if( test.setPlayerPosX(x)) playerC+=0.25;
 
             }
             else setX(xValue+x);
@@ -148,13 +148,13 @@ public class Player extends Entity implements ActionListener{
             else currentSprite = jumpLeft;
             jump(-(0.0769330454*getHeight()));
         }
-       /* else if(currentSprite!=fallLeft && currentSprite != fallRight){
+       else if(currentSprite!=fallLeft && currentSprite != fallRight){
             if(directionRight)
             {
                 currentSprite = idleRight;
             }
             else currentSprite = idleLeft;
-        }**/
+        }
     }
     public void setHitBox(int x, int y, int width, int height)
     {

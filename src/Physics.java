@@ -31,6 +31,8 @@ public class Physics implements ActionListener {
         }
     }
 
+    public boolean getFallAction(){return fallAction;}
+
     public void actionPerformed(ActionEvent e) {
         gravityConstant = 0.0215982721* being.getHeight();
         if (currentVelocity>0) {
@@ -103,7 +105,7 @@ public class Physics implements ActionListener {
             jumpAction = false;
             fallAction = false;
             currentVelocity = 0.0215982721* being.getHeight();
-            if(being instanceof Player) {
+            if(being instanceof Player && DrawPanel.keyPressed.equals("idle")) {
                 ((Player) being).setIdle();
             }
         }
