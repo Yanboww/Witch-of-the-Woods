@@ -219,6 +219,12 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
                        g.drawRect(tileX,tileY,tileW,tileH);
                     }
                 }
+                if(block.getTileC()==45)
+                {
+                    g.setColor(new Color(0,255,255));
+                    g.drawRect((int)game.getEnemies().get(0).getHitBox().getX(),(int)game.getEnemies().get(0).getHitBox().getY(),(int)game.getEnemies().get(0).getHitBox().getWidth(),(int)game.getEnemies().get(0).getHitBox().getHeight());
+                    g.drawImage(game.getEnemies().get(0).getCurrentSprite().returnImage(),game.getEnemies().get(0).getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
+                }
                 x+=getWidth()/9;
             }
             y+=getHeight()/9;

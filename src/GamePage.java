@@ -7,6 +7,7 @@ public class GamePage extends Page{
     private Tile currentTile;
     private Physics playerPhysics;
     private ArrayList<AnimSprites> pageSprites;
+    private ArrayList<Enemy> enemies;
     public GamePage(String name, int frameHeight, int frameWidth)
     {
         super(name);
@@ -16,12 +17,23 @@ public class GamePage extends Page{
         playerPhysics = new Physics(player,this);
         pageSprites = new ArrayList<>();
         genPageSprite();
+        enemies = new ArrayList<>();
+        enemies.add(new Enemy(10,60,10,frameWidth,frameHeight,frameWidth/2,player.getY(),"solomon",this));
     }
+    public ArrayList<Enemy> getEnemies(){return enemies;}
     public void setFrameHeight(int height){
         player.setHeight(height);
+        for(Enemy e : enemies)
+        {
+            e.setHeight(height);
+        }
     }
     public void setFrameWidth(int width){
         player.setWidth(width);
+        for(Enemy e : enemies)
+        {
+            e.setWidth(width);
+        }
     }
     public World getWorld(){return world;}
     public Player getPlayer(){return player;}
@@ -188,6 +200,13 @@ public class GamePage extends Page{
         }
         return true;
     }
+
+    public boolean checkPlayerHitBox(Rectangle objectHitBox)
+    {
+        if(objectHitBox.intersects(player.getHitBox())) return true;
+        else return false;
+    }
+
 
     public void simulateJump(double y)
     {
