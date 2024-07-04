@@ -4,10 +4,10 @@ import javax.swing.Timer;
 
 public class Physics implements ActionListener {
 
-    private Entity being;
-    private double gravityConstant;
+    private final Entity being;
+    private final double gravityConstant;
     private double currentVelocity;
-    private GamePage world;
+    private final GamePage world;
     private String state;
     private boolean jumping;
     private boolean jumpAction;
@@ -16,7 +16,7 @@ public class Physics implements ActionListener {
     {
         this.being = being;
         this.world = world;
-        gravityConstant = 0.0215982721* being.getHeight();
+        gravityConstant = 0.0515982721* being.getHeight();
         Timer t = new Timer(100,this);
         currentVelocity = 0;
         state = "down";
@@ -34,7 +34,6 @@ public class Physics implements ActionListener {
     public boolean getFallAction(){return fallAction;}
 
     public void actionPerformed(ActionEvent e) {
-        gravityConstant = 0.0215982721* being.getHeight();
         if (currentVelocity>0) {
             state = "down";
             jumping = false;

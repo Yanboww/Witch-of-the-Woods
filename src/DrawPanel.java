@@ -163,9 +163,9 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         game.setFrameWidth(getWidth());
         g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
         int y = 0;
-        for(Tile[] blocks : game.worldMap())
+        for(Tile[] blocks : game.getWorld().getWorldMap())
         {
-            int x = 0;
+            int x = game.getPlayer().getWorldX();
             for(Tile block: blocks)
             {
                 block.setHitBox(x,y,getWidth()/9,getHeight()/9);

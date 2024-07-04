@@ -17,6 +17,7 @@ public class Player extends Entity implements ActionListener{
     private double playerC;
     private GamePage test;
     private Rectangle hitBox;
+    private int worldX;
 
     public Player(int attack, int speed, int health,int width, int height,String name, GamePage test)
     {
@@ -35,9 +36,11 @@ public class Player extends Entity implements ActionListener{
         playerR = 3;
         playerC = 0;
         this.test = test;
+        worldX = 0;
         hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0581679389*getWidth()),(int)(0.075*getWidth()));
         t.start();
     }
+    public int getWorldX(){return worldX;}
     public AnimSprites getCurrentSprite(){return  currentSprite;}
     public void setFalling(){
         if(directionRight)
@@ -55,36 +58,28 @@ public class Player extends Entity implements ActionListener{
     public void move(int x)
     {
         int xValue = getX();
-        if(playerC>45)
+        if(xValue+x>=0 && xValue+x<700)
         {
-            if(xValue+x>getWidth()-getWidth()/10) setX(getWidth()-getWidth()/10);
-            else setX(xValue+x);
-            if(getX()<=(int)(0.44529*getWidth())) playerC = 45;
+            setX(xValue + x);
         }
-        else if(playerC < 4)
-        {
-            if(xValue<-(int)(0.08905855242*getWidth())) setX(-(int)(0.08905855242*getWidth()));
-            else setX(xValue+x);
-            if(getX()>=(int)(0.2926*getWidth())) playerC = 4;
-        }
-        else
-        {
-            if( x< 0 && xValue<=(int)(0.1755725191*getWidth())){
-                setX((int)(0.1755725191*getWidth()));
-                if(test.setPlayerPosX(x)) playerC-=0.25;
+        if( x< 0 && xValue<=(int)(0.1755725191*getWidth())){
+            //setX((int)(0.1755725191*getWidth()));
+             worldX+= (int)(0.0254452926*getWidth());
 
-            }
-            else if(x >0 && xValue>=(int)(0.6615776081*getWidth()))
-            {
-                setX((int)(0.6615776081*getWidth()));
-                if( test.setPlayerPosX(x)) playerC+=0.25;
-
-            }
-            else setX(xValue+x);
         }
-        //test.setPlayerPos(x);
-        if(playerC < 0) playerC = 0;
-        if(playerC > 49) playerC = 49;
+        else if(x >0 && xValue>=(int)(0.6615776081*getWidth()))
+        {
+           // setX((int)(0.6615776081*getWidth()));
+            worldX-=(int)(0.0254452926*getWidth());
+
+        }
+        else setX(xValue+x);
+        if(worldX<-3550) {
+            worldX = -3550;
+        }
+        else if(worldX>0) {
+            worldX = 0;
+        }
     }
     public void jump(double y)
     {
