@@ -19,8 +19,10 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         this.addMouseListener(this);
         setFocusable(true);
         this.addKeyListener(this);
-        page = new SpecialPage("menu",getWidth());
+        //page = new SpecialPage("menu",getWidth());
         keyPressed = " ";
+        page = new GamePage("dark matter",HEIGHT,WIDTH);
+        page.stopBgm();
     }
 
     protected void paintComponent(Graphics g)
@@ -162,7 +164,7 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         game.setFrameHeight(getHeight());
         game.setFrameWidth(getWidth());
         g.drawImage(game.getPlayer().getCurrentSprite().returnImage(),game.getPlayer().getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
-        int y = 0;
+        int y = 3*getHeight()/9;
         for(Tile[] blocks : game.getWorld().getWorldMap())
         {
             int x = game.getPlayer().getWorldX();
@@ -170,16 +172,8 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
             {
                 block.setHitBox(x,y,getWidth()/9,getHeight()/9);
                 if(!block.isCharacterOnTile())
-                {   g.setColor(new Color(255,255,255));
+                {
                     g.drawImage(block.getTileImage(),x,y,getWidth()/9,getHeight()/9,this);
-                    if(drawHitBox && keyPressed.equals("B"))
-                    {
-                        int tileX = (int)block.getHitBox().getX();
-                        int tileY = (int)block.getHitBox().getY();
-                        int tileW = (int)block.getHitBox().getWidth();
-                        int tileH = (int)block.getHitBox().getHeight();
-                        g.drawRect(tileX,tileY,tileW,tileH);
-                    }
                 }
                 else if(!block.getName().equals("space"))
                 {
@@ -208,23 +202,6 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
                         g.drawImage(game.getPageSprites().get(5).returnImage(),x,y+(int)(0.0215982721*getHeight()),getWidth()/12,getHeight()/9,this);
                     }
                 }
-                else{
-                    g.setColor(new Color(0,255,255));
-                    if(drawHitBox && keyPressed.equals("E"))
-                    {
-                        int tileX = (int)block.getHitBox().getX();
-                        int tileY = (int)block.getHitBox().getY();
-                        int tileW = (int)block.getHitBox().getWidth();
-                        int tileH = (int)block.getHitBox().getHeight();
-                       g.drawRect(tileX,tileY,tileW,tileH);
-                    }
-                }
-                if(block.getTileC()==45)
-                {
-                    g.setColor(new Color(0,255,255));
-                    g.drawRect((int)game.getEnemies().get(0).getHitBox().getX(),(int)game.getEnemies().get(0).getHitBox().getY(),(int)game.getEnemies().get(0).getHitBox().getWidth(),(int)game.getEnemies().get(0).getHitBox().getHeight());
-                    g.drawImage(game.getEnemies().get(0).getCurrentSprite().returnImage(),game.getEnemies().get(0).getX(),game.getPlayer().getY(),getWidth()/6,getWidth()/6,this);
-                }
                 x+=getWidth()/9;
             }
             y+=getHeight()/9;
@@ -237,6 +214,14 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
             int pH = (int)game.getPlayer().getHitBox().getHeight();
             g.drawRect(pX,pY,pW,pH);
         }
+        g.setColor(new Color(255,255,255));
+        game.genEnemies();
+        Enemy e = game.getEnemies()[0];
+        e.setX((int)game.getWorld().getWorldMap()[0][e.getColumn()].getHitBox().getX());
+        g.drawImage(e.getCurrentSprite().returnImage(),e.getX(),e.getY(),getWidth()/3,getHeight()/3,this);
+        Rectangle hitE = e.getHitBox();
+        g.drawRect((int)hitE.getX(),(int)hitE.getY(),(int)hitE.getWidth(),(int)hitE.getHeight());
+        g.drawString("Health: " + game.getPlayer().getHealth(),100,100);
     }
 
     public void mousePressed(MouseEvent e) {

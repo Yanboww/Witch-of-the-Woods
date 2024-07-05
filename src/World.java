@@ -11,7 +11,7 @@ public class World{
     public World(String name)
     {
         worldName = name;
-        worldMap = new Tile[9][50];
+        worldMap = new Tile[6][40];
         mapKey = genHashMap();
         tileProperty = genTileProperty();
         genWorldMap();

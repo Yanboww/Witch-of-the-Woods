@@ -16,20 +16,32 @@ public class Enemy extends Entity implements ActionListener {
     private AnimSprites currentSprite;
     private GamePage world;
     private boolean isRight;
-    public Enemy(int attack, int speed, int health, int width, int height, int x, int y, String name, GamePage world)
+    private int originX;
+    private int distanceFromOrigin;
+    private boolean didDamage;
+    public Enemy(int attack, int speed, int health, int width, int height, int x, int y, String name, GamePage world, int row, int column)
     {
       super(attack,speed, health, width, height, x, y);
       this.name = name;
       this.world = world;
-      int row = 6;
-      int column = 45;
-      hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+200,(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
+      this.row = row;
+      this.column = column;
+      originX = 0;
+      distanceFromOrigin = 0;
+      hitBox = new Rectangle(getX()+50,getY()+200,(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
       genSprites();
       currentSprite = walkLeft;
       isRight = false;
       Timer t = new Timer(100,this);
       t.start();
     }
+
+    public void setX(int x)
+    {
+        originX = x;
+    }
+    public int getColumn(){return column;}
+
 
     public Rectangle getHitBox(){return hitBox;}
     private void genSprites()
@@ -50,7 +62,7 @@ public class Enemy extends Entity implements ActionListener {
     public void setWidth(int width) {
         if(width!=getWidth())
         {
-            setX((int)((double)getX()/getWidth()*width));
+            distanceFromOrigin = (int)((double)distanceFromOrigin/getWidth()*width);
         }
         super.setWidth(width);
     }
@@ -62,23 +74,42 @@ public class Enemy extends Entity implements ActionListener {
         super.setHeight(height);
     }
 
+    public int getX()
+    {
+        return originX + distanceFromOrigin;
+    }
+
     public void actionPerformed(ActionEvent e)
     {
-        int x = world.getPlayer().getX();
-        hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+200,(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
+        int x = (int)world.getPlayer().getHitBox().getX();
         if(world.checkPlayerHitBox(hitBox))
         {
-            if(isRight) currentSprite = attackRight;
-            else currentSprite = attackLeft;
+            if(isRight) {
+                hitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.1272264631*getWidth()),getY()+(int)(0.1079913607*getHeight()),(int)(0.1908396947*getWidth()),(int)(0.2159827214*getHeight()));
+                currentSprite = attackRight;
+            }
+            else {
+                hitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.0254452926*getWidth()),getY()+(int)(0.10799131607*getHeight()),(int)(0.1908396947*getWidth()),(int)(0.2159827214*getHeight()));
+                currentSprite = attackLeft;
+            }
+            if(currentSprite.getCounter() >=6 && !didDamage){
+                world.hitEvent(-10);
+                didDamage = true;
+            }
+            else if(currentSprite.getCounter()==1) didDamage = false;
         }
-        else if(x>getX()){
+        else if(x> hitBox.getX()){
+            hitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.1272264631*getWidth()),getY()+(int)(0.1079913607*getHeight()),(int)(0.1908396947*getWidth()),(int)(0.2159827214*getHeight()));
             currentSprite = walkRight;
             isRight = true;
+            distanceFromOrigin += (int)(0.0127226463*getWidth());
         }
-        else if(x<getX())
+        else if(x< hitBox.getX())
         {
+            hitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.0254452926*getWidth()),getY()+(int)(0.10799131607*getHeight()),(int)(0.1908396947*getWidth()),(int)(0.2159827214*getHeight()));
             currentSprite = walkLeft;
             isRight = false;
+            distanceFromOrigin-= (int)(0.0127226463*getWidth());
         }
     }
 

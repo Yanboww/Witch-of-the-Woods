@@ -7,7 +7,7 @@ public class GamePage extends Page{
     private Tile currentTile;
     private Physics playerPhysics;
     private ArrayList<AnimSprites> pageSprites;
-    private ArrayList<Enemy> enemies;
+    private Enemy[] enemies;
     public GamePage(String name, int frameHeight, int frameWidth)
     {
         super(name);
@@ -17,10 +17,19 @@ public class GamePage extends Page{
         playerPhysics = new Physics(player,this);
         pageSprites = new ArrayList<>();
         genPageSprite();
-        enemies = new ArrayList<>();
-        enemies.add(new Enemy(10,60,10,frameWidth,frameHeight,frameWidth/2,player.getY(),"solomon",this));
+        enemies = new Enemy[1];
+        genEnemies();
     }
-    public ArrayList<Enemy> getEnemies(){return enemies;}
+    public Enemy[] getEnemies(){return enemies;}
+    public void genEnemies(){
+        for(int i = 0; i < enemies.length; i++)
+        {
+            if(enemies[i]==null) {
+                int randomC = (int)(Math.random()*10)+30;
+                enemies[i] = new Enemy(10,60,10, player.getWidth(), player.getHeight(),-69420,230,"solomon",this,6,randomC);
+            }
+        }
+    }
     public void setFrameHeight(int height){
         player.setHeight(height);
         for(Enemy e : enemies)
@@ -45,7 +54,7 @@ public class GamePage extends Page{
        int currentColumn = currentTile.getTileC();
        int testColumn = 0;
        if(DrawPanel.keyPressed.equals("A") && currentColumn != 0) testColumn = currentColumn-1;
-       else if(DrawPanel.keyPressed.equals("D") && currentColumn != 49) testColumn = currentColumn+1;
+       else if(DrawPanel.keyPressed.equals("D") && currentColumn != 39) testColumn = currentColumn+1;
        Tile nextTile = worldMap[currentTile.getTileR()][testColumn];
        if(!nextTile.isCharacterOnTile())
        {
@@ -57,7 +66,7 @@ public class GamePage extends Page{
     {
         Tile[][] map = world.getWorldMap();
         setPlayerPosX(0);
-        if(currentTile.getTileR() == 8 && state.equals("down")) return false;
+        if(currentTile.getTileR() == 5 && state.equals("down")) return false;
         if(currentTile.getTileR() == 0 && state.equals("up")) return false;
         int c = currentTile.getTileC();
         if(state.equals("up"))
@@ -119,7 +128,7 @@ public class GamePage extends Page{
                            if(playerBlockArea>playerCurrentArea)
                            {
                                currentTile = block;
-                               System.out.println(block.getTileR() + " ," + block.getTileC());
+                               return;
                            }
                        }
                    }
@@ -134,6 +143,25 @@ public class GamePage extends Page{
         else return false;
     }
 
+    public Tile currentTile()
+    {
+        for(Tile[] tiles : world.getWorldMap())
+        {
+            for(Tile tile : tiles)
+            {
+                if(tile.getHitBox().intersects(player.getHitBox())) return tile;
+            }
+        }
+        return world.getWorldMap()[3][0];
+    }
+
+
+    public Tile getCurrentTile(){return currentTile;}
+
+    public void hitEvent(int hp)
+    {
+        player.setHealth(player.getHealth()+hp);
+    }
 
     public void simulateJump(double y)
     {

@@ -62,15 +62,15 @@ public class Player extends Entity implements ActionListener{
         {
             setX(xValue + x);
         }
-        if( x< 0 && xValue<=(int)(0.1755725191*getWidth())){
+        if( x< 0 && xValue<=(int)(0.1555725191*getWidth())){
             //setX((int)(0.1755725191*getWidth()));
-             worldX+= (int)(0.0254452926*getWidth());
+             worldX+= (int)(0.0154452926*getWidth());
 
         }
-        else if(x >0 && xValue>=(int)(0.6615776081*getWidth()))
+        else if(x >0 && xValue>=(int)(0.6815776081*getWidth()))
         {
            // setX((int)(0.6615776081*getWidth()));
-            worldX-=(int)(0.0254452926*getWidth());
+            worldX-=(int)(0.0154452926*getWidth());
 
         }
         else setX(xValue+x);
@@ -88,6 +88,7 @@ public class Player extends Entity implements ActionListener{
     public void setWidth(int width) {
         if(width!=getWidth())
         {
+            worldX = (int)((double)worldX/getWidth() * width);
             setX((int)((double)getX()/getWidth()*width));
         }
         super.setWidth(width);
@@ -149,6 +150,11 @@ public class Player extends Entity implements ActionListener{
                 currentSprite = idleRight;
             }
             else currentSprite = idleLeft;
+       }
+       Tile currentTile = test.currentTile();
+        if(!currentTile.isCharacterOnTile())
+        {
+            setY((int)(0.2375809935*getHeight()));
         }
     }
     public void setHitBox(int x, int y, int width, int height)

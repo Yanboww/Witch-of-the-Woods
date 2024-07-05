@@ -31,6 +31,7 @@ public class AnimSprites implements ActionListener {
         t.start();
 
     }
+    public int getCounter(){return counter;}
 
     public boolean isMoveable(){return moveable;}
 
