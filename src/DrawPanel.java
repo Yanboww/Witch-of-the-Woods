@@ -219,9 +219,17 @@ class DrawPanel extends JPanel implements MouseListener, KeyListener,ActionListe
         Enemy e = game.getEnemies()[0];
         e.setX((int)game.getWorld().getWorldMap()[0][e.getColumn()].getHitBox().getX());
         g.drawImage(e.getCurrentSprite().returnImage(),e.getX(),e.getY(),getWidth()/3,getHeight()/3,this);
-        Rectangle hitE = e.getHitBox();
-        g.drawRect((int)hitE.getX(),(int)hitE.getY(),(int)hitE.getWidth(),(int)hitE.getHeight());
+       /* Rectangle hitE = e.getDamageHitBox();
+        g.drawRect((int)hitE.getX(),(int)hitE.getY(),(int)hitE.getWidth(),(int)hitE.getHeight());*/
         g.drawString("Health: " + game.getPlayer().getHealth(),100,100);
+        if(!game.getSpellsOnMap().isEmpty())
+        {
+            System.out.println("ap");
+            Spell spell = game.getSpellsOnMap().get(0);
+            AnimSprites spellSprite = spell.getCurrentAnim(spell.isRight());
+            g.drawImage(spellSprite.returnImage(),spell.getX(),spell.getY(),getWidth()/10,getHeight()/10,this);
+
+        }
     }
 
     public void mousePressed(MouseEvent e) {

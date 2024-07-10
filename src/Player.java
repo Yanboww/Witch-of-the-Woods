@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+
 public class Player extends Entity implements ActionListener{
     private final AnimSprites walkLeft;
     private final AnimSprites walkRight;
@@ -18,6 +20,7 @@ public class Player extends Entity implements ActionListener{
     private GamePage test;
     private Rectangle hitBox;
     private int worldX;
+    private ArrayList<Spell> equippedSpells;
 
     public Player(int attack, int speed, int health,int width, int height,String name, GamePage test)
     {
@@ -38,10 +41,20 @@ public class Player extends Entity implements ActionListener{
         this.test = test;
         worldX = 0;
         hitBox = new Rectangle(getX()+(int)(0.0690585242*getWidth()),getY()+(int)(0.0572519084*getWidth()),(int)(0.0581679389*getWidth()),(int)(0.075*getWidth()));
+        equippedSpells = generateEquippedSpells();
         t.start();
     }
     public int getWorldX(){return worldX;}
     public AnimSprites getCurrentSprite(){return  currentSprite;}
+    public ArrayList<Spell> generateEquippedSpells()
+    {
+        ArrayList<Spell> spells = new ArrayList<>();
+        spells.add(new Spell(true,2,"fireball",getAttack()));
+        return spells;
+    }
+
+    public ArrayList<Spell> getEquippedSpells(){return getEquippedSpells();}
+
     public void setFalling(){
         if(directionRight)
         {
@@ -58,9 +71,13 @@ public class Player extends Entity implements ActionListener{
     public void move(int x)
     {
         int xValue = getX();
-        if(xValue+x>=0 && xValue+x<700)
+        Tile currentTile = test.currentTile();
+        if((currentTile.getTileC() >35 || currentTile.getTileC() <5) && xValue+x>=-70 && xValue+x<700)
         {
             setX(xValue + x);
+        }
+        else if(xValue+x>=200 && xValue+x<getWidth()/2){
+            setX(xValue+x);
         }
         if( x< 0 && xValue<=(int)(0.1555725191*getWidth())){
             //setX((int)(0.1755725191*getWidth()));
@@ -73,7 +90,7 @@ public class Player extends Entity implements ActionListener{
             worldX-=(int)(0.0154452926*getWidth());
 
         }
-        else setX(xValue+x);
+        else setX(xValue+x );
         if(worldX<-3550) {
             worldX = -3550;
         }
@@ -143,6 +160,10 @@ public class Player extends Entity implements ActionListener{
             }
             else currentSprite = jumpLeft;
             jump(-(0.0769330454*getHeight()));
+        }
+        else if(DrawPanel.keyPressed.equals("E"))
+        {
+            test.addSpellOnMap(equippedSpells.get(0));
         }
        else if(currentSprite!=fallLeft && currentSprite != fallRight){
             if(directionRight)

@@ -46,7 +46,9 @@ public class AnimSprites implements ActionListener {
             else frames.add(temp);
         }
     }
-    public BufferedImage returnImage(){return frames.get(counter);}
+    public BufferedImage returnImage(){
+        return frames.get(counter);
+    }
 
     public void actionPerformed(ActionEvent e)
     {

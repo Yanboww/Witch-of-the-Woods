@@ -13,6 +13,7 @@ public class Enemy extends Entity implements ActionListener {
     private int row;
     private int column;
     private Rectangle hitBox;
+    private Rectangle damageHitBox;
     private AnimSprites currentSprite;
     private GamePage world;
     private boolean isRight;
@@ -29,6 +30,7 @@ public class Enemy extends Entity implements ActionListener {
       originX = 0;
       distanceFromOrigin = 0;
       hitBox = new Rectangle(getX()+50,getY()+200,(int)(0.0481679389*getWidth()),(int)(0.075*getWidth()));
+      damageHitBox = new Rectangle(getX()+50,getY()+200,200,(int)(0.075*getWidth()));
       genSprites();
       currentSprite = walkLeft;
       isRight = false;
@@ -44,6 +46,7 @@ public class Enemy extends Entity implements ActionListener {
 
 
     public Rectangle getHitBox(){return hitBox;}
+    public Rectangle getDamageHitBox(){return damageHitBox;}
     private void genSprites()
     {
         walkLeft = new AnimSprites(name+"_walk_left","enemy",true,getWidth(),0,0);
@@ -82,6 +85,7 @@ public class Enemy extends Entity implements ActionListener {
     public void actionPerformed(ActionEvent e)
     {
         int x = (int)world.getPlayer().getHitBox().getX();
+        damageHitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.1272264631*getWidth()),getY()+(int)(0.1079913607*getHeight()),50,100);
         if(world.checkPlayerHitBox(hitBox))
         {
             if(isRight) {
@@ -102,14 +106,19 @@ public class Enemy extends Entity implements ActionListener {
             hitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.1272264631*getWidth()),getY()+(int)(0.1079913607*getHeight()),(int)(0.1908396947*getWidth()),(int)(0.2159827214*getHeight()));
             currentSprite = walkRight;
             isRight = true;
-            distanceFromOrigin += (int)(0.0127226463*getWidth());
+            int random = (int)(Math.random()*2)+1;
+            if(random==1) distanceFromOrigin += (int)(0.0127226463*getWidth());
+
+            else distanceFromOrigin += (int)(0.0087226463*getWidth());
         }
         else if(x< hitBox.getX())
         {
             hitBox = new Rectangle(originX+distanceFromOrigin+(int)(0.0254452926*getWidth()),getY()+(int)(0.10799131607*getHeight()),(int)(0.1908396947*getWidth()),(int)(0.2159827214*getHeight()));
             currentSprite = walkLeft;
             isRight = false;
-            distanceFromOrigin-= (int)(0.0127226463*getWidth());
+            int random = (int)(Math.random()*2)+1;
+            if(random == 1) distanceFromOrigin-= (int)(0.0127226463*getWidth());
+            else distanceFromOrigin -=(int)(0.0087226463*getWidth());
         }
     }
 

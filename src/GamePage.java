@@ -1,35 +1,58 @@
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
 
-public class GamePage extends Page{
+public class GamePage extends Page implements ActionListener {
     private final World world;
     private final Player player;
     private Tile currentTile;
     private Physics playerPhysics;
     private ArrayList<AnimSprites> pageSprites;
     private Enemy[] enemies;
+    private ArrayList<Spell> spellsOnMap;
     public GamePage(String name, int frameHeight, int frameWidth)
     {
         super(name);
         world = new World(name);
-        player = new Player(10,50,10,frameWidth,frameHeight,"player",this);
+        player = new Player(5,50,100,frameWidth,frameHeight,"player",this);
         currentTile = world.getWorldMap()[3][0];
         playerPhysics = new Physics(player,this);
         pageSprites = new ArrayList<>();
+        spellsOnMap = new ArrayList<>();
         genPageSprite();
         enemies = new Enemy[1];
         genEnemies();
+        Timer t = new Timer(100,this);
+        t.start();
     }
     public Enemy[] getEnemies(){return enemies;}
     public void genEnemies(){
         for(int i = 0; i < enemies.length; i++)
         {
             if(enemies[i]==null) {
-                int randomC = (int)(Math.random()*10)+30;
-                enemies[i] = new Enemy(10,60,10, player.getWidth(), player.getHeight(),-69420,230,"solomon",this,6,randomC);
+                int randomC = (int)(Math.random()*10)+20;
+                enemies[i] = new Enemy(10,60,100, player.getWidth(), player.getHeight(),-69420,230,"solomon",this,6,randomC);
             }
         }
     }
+
+    public void addSpellOnMap(Spell spell)
+    {
+       if(!spellsOnMap.contains(spell)){
+           spellsOnMap.add(spell);
+           spell.getCurrentAnim(player.getDirectionRight());
+           if(spell.isRight()) spell.setX(player.getX()+50);
+           else spell.setX(player.getX()-10);
+           spell.setY(player.getY()+50);
+       }
+
+
+    }
+
+    public ArrayList<Spell> getSpellsOnMap(){return spellsOnMap;}
+
     public void setFrameHeight(int height){
         player.setHeight(height);
         for(Enemy e : enemies)
@@ -166,6 +189,17 @@ public class GamePage extends Page{
     public void simulateJump(double y)
     {
         playerPhysics.setCurrentVelocity(y);
+    }
+    public void actionPerformed(ActionEvent e)
+    {
+        for(int i = 0; i < spellsOnMap.size(); i++)
+        {
+            if(!spellsOnMap.get(i).isShouldStay())
+            {
+                spellsOnMap.remove(0);
+                i--;
+            }
+        }
     }
 
 }
